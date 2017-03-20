@@ -23,4 +23,6 @@ class Times implements IntegerExpression {
     @Override public String toString() {
         return "(" + left + ")*(" + right + ")";
     }
+
+    // TODO: implement equals() and hashCode()?
 }

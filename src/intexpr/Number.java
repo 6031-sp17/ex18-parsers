@@ -23,4 +23,6 @@ class Number implements IntegerExpression {
     @Override public String toString() {
         return String.valueOf(n);
     }
+
+    // TODO: implement equals() and hashCode()?
 }

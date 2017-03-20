@@ -7,6 +7,7 @@ import java.util.List;
 import lib6005.parser.ParseTree;
 import lib6005.parser.Parser;
 import lib6005.parser.UnableToParseException;
+import lib6005.parser.Visualizer;
 
 public class Main {
 
@@ -37,7 +38,7 @@ public class Main {
         System.out.println("parse tree " + parseTree);
 
         // display the parse tree in a web browser, for debugging
-        parseTree.display();
+        Visualizer.showInBrowser(parseTree);
 
         // make an AST from the parse tree
         final IntegerExpression expression = makeAbstractSyntaxTree(parseTree);
@@ -81,7 +82,6 @@ public class Main {
      * @return abstract syntax tree corresponding to parseTree
      */
     private static IntegerExpression makeAbstractSyntaxTree(final ParseTree<IntegerGrammar> parseTree) {
-
         switch (parseTree.name()) {
         case ROOT: // root ::= sum;
             {

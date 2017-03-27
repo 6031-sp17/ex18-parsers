@@ -1,7 +1,7 @@
 package intexpr;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import lib6005.parser.ParseTree;
@@ -26,31 +26,29 @@ public class IntegerExpressionParser {
         
     }
     
-    private static final File grammarFile = new File("IntegerExpression.g");
-
     // the nonterminals of the grammar
     private enum IntegerGrammar {
         ROOT, SUM, PRIMARY, NUMBER, WHITESPACE,
     };
 
-    private static Parser<IntegerGrammar> parser = makeParser(grammarFile);
+    private static Parser<IntegerGrammar> parser = makeParser("IntegerExpression.g");
     
     /**
      * Compile the grammar into a parser.
      * 
-     * @param grammar file containing the grammar
+     * @param grammarFilename <b>Must be in this class's Java package.</b>
      * @return parser for the grammar
      * @throws RuntimeException if grammar file can't be read or has syntax errors
      */
-    private static Parser<IntegerGrammar> makeParser(final File grammar) {
+    private static Parser<IntegerGrammar> makeParser(final String grammarFilename) {
         try {
+            // open the grammar file relative to this class's package
+            final InputStream grammarStream = IntegerExpressionParser.class.getResourceAsStream(grammarFilename);
 
-            return Parser.compile(grammar, IntegerGrammar.ROOT);
+            return Parser.compile(grammarStream, IntegerGrammar.ROOT);
 
-            // translate these checked exceptions into unchecked
-            // RuntimeExceptions,
-            // because these failures indicate internal bugs rather than client
-            // errors
+            // translate these checked exceptions into unchecked RuntimeExceptions,
+            // because these failures indicate internal bugs rather than client errors
         } catch (IOException e) {
             throw new RuntimeException("can't read the grammar file", e);
         } catch (UnableToParseException e) {

@@ -1,7 +1,7 @@
 package intexpr;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 import lib6005.parser.ParseTree;
@@ -31,7 +31,7 @@ public class IntegerExpressionParser {
         ROOT, SUM, PRIMARY, NUMBER, WHITESPACE,
     };
 
-    private static Parser<IntegerGrammar> parser = makeParser("IntegerExpression.g");
+    private static Parser<IntegerGrammar> parser = makeParser();
     
     /**
      * Compile the grammar into a parser.
@@ -40,15 +40,25 @@ public class IntegerExpressionParser {
      * @return parser for the grammar
      * @throws RuntimeException if grammar file can't be read or has syntax errors
      */
-    private static Parser<IntegerGrammar> makeParser(final String grammarFilename) {
+    private static Parser<IntegerGrammar> makeParser() {
         try {
-            // open the grammar file relative to this class's package
-            final InputStream grammarStream = IntegerExpressionParser.class.getResourceAsStream(grammarFilename);
+            // read the grammar as a file, relative to the project root.
+            final File grammarFile = new File("src/intexpr/IntegerExpression.g");
+            return Parser.compile(grammarFile, IntegerGrammar.ROOT);
 
-            return Parser.compile(grammarStream, IntegerGrammar.ROOT);
+            // A better way would read the grammar as a "classpath resource", which would allow this code 
+            // to be packed up in a jar and still be able to find its grammar file:
+            //
+            // final InputStream grammarStream = IntegerExpression.class.openResourceAsStream("IntegerExpression.g");
+            // return Parser.compile(grammarStream, IntegerGrammar.ROOT);
+            //
+            // See http://www.javaworld.com/article/2077352/java-se/smartly-load-your-properties.html
+            // for a discussion of classpath resources.
+            
 
-            // translate these checked exceptions into unchecked RuntimeExceptions,
-            // because these failures indicate internal bugs rather than client errors
+        // Parser.compile() throws two checked exceptions.
+        // Translate these checked exceptions into unchecked RuntimeExceptions,
+        // because these failures indicate internal bugs rather than client errors
         } catch (IOException e) {
             throw new RuntimeException("can't read the grammar file", e);
         } catch (UnableToParseException e) {
